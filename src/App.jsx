@@ -1,0 +1,34 @@
+import { useEffect, useState } from 'react'
+import { Routes, Route } from 'react-router-dom'
+// import { ToastContainer } from 'react-toastify'
+// import 'react-toastify/dist/ReactToastify.min.css'
+import { isWalletConnected, getInfo, getProposals, } from './Blockchain.services'
+import CreateProposal from './components/CreateProposal'
+import Header from './components/Header'
+import Home from './views/Home'
+import Proposal from './views/Proposal'
+
+const App = () => {
+  const [loaded, setLoaded] = useState(false)
+  useEffect(async () => {
+    await isWalletConnected()
+    await getInfo()
+    await getProposals()
+    setLoaded(true)
+  }, [])
+
+  return (
+    <div className="min-h-screen bg-white text-gray-900 dark:bg-[#212936] dark:text-gray-300">
+      <Header />
+      {loaded ? (
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/proposal/:id" element={<Proposal />} />
+        </Routes>
+      ) : null}
+      <CreateProposal />
+    </div>
+  )
+}
+
+export default App
